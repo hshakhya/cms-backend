@@ -23,22 +23,52 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+//    public AuthResponse register(RegisterRequest request) {
+//        // Check if user already exists
+//        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+//            // In a real app, you'd throw a specific exception here
+//            return AuthResponse.builder()
+//                    .message("Email already in use")
+//                    .build();
+//        }
+//
+//        // Create new user
+//        var user = User.builder()
+//                .firstName(request.getFirstName())
+//                .lastName(request.getLastName())
+//                .email(request.getEmail())
+//                .password(passwordEncoder.encode(request.getPassword()))
+//                .role(Role.ROLE_USER) // Default to ROLE_USER
+//                .build();
+//
+//        userRepository.save(user);
+//
+//        // Generate token
+//        var jwtToken = jwtService.generateToken(user);
+//
+//        return AuthResponse.builder()
+//                .token(jwtToken)
+//                .message("User registered successfully")
+//                .build();
+//    }
+
     public AuthResponse register(RegisterRequest request) {
         // Check if user already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            // In a real app, you'd throw a specific exception here
             return AuthResponse.builder()
                     .message("Email already in use")
                     .build();
         }
 
-        // Create new user
+        // Create new user with dynamic role selection
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.ROLE_USER) // Default to ROLE_USER
+                // 🔥 MODIFIED: Instead of hardcoded ROLE_USER, we use the role from the request
+                // This allows you to create Admins directly from your new Dashboard page
+                .role(Role.valueOf(request.getRole()))
                 .build();
 
         userRepository.save(user);
