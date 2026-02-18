@@ -211,6 +211,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> req
                         // Public: Login & Register
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll()
 
                         // Public: GET requests for Categories & Products (for your website)
                         .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
